@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Available Trips</h3>
+
+<div class="grid">
+{% for t in trips %}
+    <div class="card">
+        <h4>{{ t[1] }}</h4>
+        <p>{{ t[2] }} → {{ t[3] }}</p>
+        <p>Budget: ₹{{ t[4] }}</p>
+
+        <a class="btn" href="/apply/{{ t[0] }}">Apply</a>
+    </div>
+{% endfor %}
+</div>
+
+{% endblock %}
+

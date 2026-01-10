@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Your Trips</h3>
+
+<div class="grid">
+{% for t in trips %}
+    <div class="card">
+        <h4>{{ t[1] }}</h4>
+        <p><b>Dates:</b> {{ t[2] }} → {{ t[3] }}</p>
+        <p><b>Budget:</b> ₹{{ t[4] }}</p>
+
+        <a class="btn" href="/expenses/{{ t[0] }}">View Expenses</a>
+        <a class="btn danger" href="/delete/{{ t[0] }}"
+           onclick="return confirm('Delete this trip?')">Delete</a>
+    </div>
+{% endfor %}
+</div>
+
+{% if not trips %}
+<p>No trips added yet.</p>
+{% endif %}
+
+{% endblock %}

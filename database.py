@@ -13,7 +13,8 @@ def create_tables():
         destination TEXT,
         start_date TEXT,
         end_date TEXT,
-        budget REAL
+        budget REAL,
+        created_at TEXT
     )
     """)
 
@@ -22,10 +23,31 @@ def create_tables():
         expense_id INTEGER PRIMARY KEY AUTOINCREMENT,
         trip_id INTEGER,
         category TEXT,
+        description TEXT,
         amount REAL,
         FOREIGN KEY(trip_id) REFERENCES Trip(trip_id)
+    )
+    """)
+    
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS User (
+        user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT,
+        role TEXT
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS Booking (
+        booking_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trip_id INTEGER,
+        user_id INTEGER,
+        status TEXT,
+        FOREIGN KEY(trip_id) REFERENCES Trip(trip_id),
+        FOREIGN KEY(user_id) REFERENCES User(user_id)
     )
     """)
 
     conn.commit()
     conn.close()
+

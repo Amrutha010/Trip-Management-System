@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Login</h3>
+
+<form method="post" class="form">
+    <input name="username" placeholder="Enter name" required>
+
+    <select name="role">
+        <option value="customer">Customer</option>
+        <option value="agent">Agent</option>
+    </select>
+
+    <button class="btn">Login</button>
+</form>
+
+{% endblock %}

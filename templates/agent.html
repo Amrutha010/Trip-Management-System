@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Agent Dashboard</h3>
+
+<h4>Trips</h4>
+<ul>
+{% for t in trips %}
+    <li>{{ t[1] }} ({{ t[2] }} → {{ t[3] }})</li>
+{% endfor %}
+</ul>
+
+<hr>
+
+<h4>Customer Applications</h4>
+<table>
+<tr><th>User</th><th>Destination</th><th>Status</th></tr>
+{% for b in bookings %}
+<tr>
+    <td>{{ b[1] }}</td>
+    <td>{{ b[2] }}</td>
+    <td>{{ b[3] }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
