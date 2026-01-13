@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
+{% block title %}Sign up{% endblock %}
 {% block content %}
 <div class="center">
   <div class="auth-card card">
-    <h2 style="margin-top:0">Sign in</h2>
-    <p class="small muted">Use admin / password (change this in app.py)</p>
+    <h2 style="margin-top:0">Create customer account</h2>
+    <p class="small muted">Register to make bookings and view trips.</p>
 
-    <form class="form" method="post" action="{{ url_for('login') }}">
+    <form class="form" method="post" action="{{ url_for('signup') }}">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div>
         <label for="username">Username</label>
@@ -16,13 +16,13 @@
         <label for="password">Password</label>
         <div style="display:flex; gap:8px; align-items:center;">
           <input id="password" name="password" type="password" required style="flex:1;">
-          <button id="toggle-login-password" type="button" class="btn secondary" style="padding:6px 8px;">Show</button>
+          <button id="toggle-password" type="button" class="btn secondary" style="padding:6px 8px;">Show</button>
         </div>
       </div>
 
       <div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center;">
-        <button class="btn" type="submit">Login</button>
-        <a class="small muted" href="{{ url_for('index') }}">Continue as guest</a>
+        <button class="btn" type="submit">Create account</button>
+        <a class="small muted" href="{{ url_for('login') }}">Already have an account?</a>
       </div>
     </form>
   </div>
@@ -31,7 +31,7 @@
 <script>
   (function(){
     const pwd = document.getElementById('password');
-    const btn = document.getElementById('toggle-login-password');
+    const btn = document.getElementById('toggle-password');
     if (!pwd || !btn) return;
     btn.addEventListener('click', function(){
       if (pwd.type === 'password') {

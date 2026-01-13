@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Agent requests{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Agent approval requests</h1>
+    <p class="muted">Approve or reject pending agent accounts.</p>
+  </div>
+</section>
+
+<div class="grid">
+  {% for a in pending_agents %}
+    <article class="card">
+      <div class="title">{{ a.username }}</div>
+      <div class="small">Requested: {{ a.created_at.strftime('%Y-%m-%d') }}</div>
+      <div style="margin-top:10px">
+        <form method="post" action="{{ url_for('approve_agent', agent_id=a.id) }}" style="display:inline;">
+          <button class="btn" type="submit">Approve</button>
+        </form>
+        <form method="post" action="{{ url_for('reject_agent', agent_id=a.id) }}" style="display:inline; margin-left:6px;">
+          <button class="btn secondary" type="submit">Reject</button>
+        </form>
+      </div>
+    </article>
+  {% else %}
+    <div class="card">No pending agent requests.</div>
+  {% endfor %}
+</div>
+{% endblock %}

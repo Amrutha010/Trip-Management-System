@@ -1,27 +1,37 @@
 {% extends "base.html" %}
+{% block title %}Agent{% endblock %}
 {% block content %}
+<section class="hero">
+  <div>
+    <h1>Agent Portal</h1>
+    {% if current_user and not current_user.agent_approved %}
+      <p class="muted">Your agent account is pending admin approval. You can browse trips but cannot edit or manage bookings until approved.</p>
+    {% else %}
+      <p class="muted">Create and manage trips and bookings.</p>
+    {% endif %}
+  </div>
+</section>
 
-<h3>Agent Dashboard</h3>
-
-<h4>Trips</h4>
-<ul>
-{% for t in trips %}
-    <li>{{ t[1] }} ({{ t[2] }} → {{ t[3] }})</li>
-{% endfor %}
-</ul>
-
-<hr>
-
-<h4>Customer Applications</h4>
-<table>
-<tr><th>User</th><th>Destination</th><th>Status</th></tr>
-{% for b in bookings %}
-<tr>
-    <td>{{ b[1] }}</td>
-    <td>{{ b[2] }}</td>
-    <td>{{ b[3] }}</td>
-</tr>
-{% endfor %}
-</table>
-
+{% if current_user and not current_user.agent_approved %}
+  <div class="card">
+    <div class="title">Status</div>
+    <div class="small">Account: <strong>Pending approval</strong></div>
+    <div style="margin-top:10px" class="small muted">An admin will review your request. You will be notified when approved.</div>
+  </div>
+{% else %}
+  <div class="grid">
+    {% for t in trips %}
+      <article class="card">
+        <img class="thumb" src="https://picsum.photos/seed/{{ t.id }}/600/340" alt="photo for {{ t.title }}">
+        <div class="title">{{ t.title }}</div>
+        <div class="meta">{{ t.destination or '—' }}</div>
+        <div style="margin-top:10px">
+          <a class="btn" href="{{ url_for('bookings_for_trip', trip_id=t.id) }}">Bookings</a>
+          <a class="btn secondary" href="{{ url_for('view_trip', id=t.id) }}">View</a>
+          <a class="btn" href="{{ url_for('edit_trip', id=t.id) }}">Edit</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% endif %}
 {% endblock %}

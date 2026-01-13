@@ -1,36 +1,25 @@
 {% extends "base.html" %}
+{% block title %}Customer area{% endblock %}
 {% block content %}
-
-<h3>Available Packages</h3>
+<section class="hero">
+  <div>
+    <h1>Your bookings</h1>
+    <p class="muted">Manage your bookings or view details.</p>
+  </div>
+</section>
 
 <div class="grid">
-{% for p in packages %}
-<div class="card">
-    <h4>{{ p[1] }}</h4>
-    <p>Destination: {{ p[3] }}</p>
-    <p>Price: ₹{{ p[2] }}</p>
-    <a class="btn" href="/book/{{ p[0] }}">Book</a>
-    <a class="btn" href="/wishlist/{{ p[0] }}">Wishlist</a>
+  {% for b in bookings %}
+    <article class="card">
+      <div class="title">{{ b.trip.title }}</div>
+      <div class="small muted">Seats: {{ b.seats }} • Created: {{ b.created_at.strftime('%Y-%m-%d') }}</div>
+      <div class="small">Contact: {{ b.contact }}</div>
+      <div style="margin-top:10px">
+        <a class="btn" href="{{ url_for('view_booking', id=b.id) }}">View</a>
+      </div>
+    </article>
+  {% else %}
+    <div class="card">You have no bookings yet. Browse trips to book one.</div>
+  {% endfor %}
 </div>
-{% endfor %}
-</div>
-
-<hr>
-
-<h3>Your Bookings</h3>
-<ul>
-{% for b in bookings %}
-<li>{{ b[0] }} – {{ b[1] }}</li>
-{% endfor %}
-</ul>
-
-<hr>
-
-<h3>Wishlist</h3>
-<ul>
-{% for w in wishlist %}
-<li>{{ w[0] }}</li>
-{% endfor %}
-</ul>
-
 {% endblock %}

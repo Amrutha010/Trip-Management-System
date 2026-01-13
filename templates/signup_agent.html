@@ -1,28 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
+{% block title %}Agent sign up{% endblock %}
 {% block content %}
 <div class="center">
   <div class="auth-card card">
-    <h2 style="margin-top:0">Sign in</h2>
-    <p class="small muted">Use admin / password (change this in app.py)</p>
+    <h2 style="margin-top:0">Agent registration</h2>
+    <p class="small muted">Create an agent account — admin approval required. (Access only via onboarding URL)</p>
 
-    <form class="form" method="post" action="{{ url_for('login') }}">
+    <form class="form" method="post" action="{{ url_for('agent_onboard', token=token) }}">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div>
-        <label for="username">Username</label>
+        <label for="username">Agent username</label>
         <input id="username" name="username" type="text" required>
       </div>
       <div style="margin-top:10px;">
         <label for="password">Password</label>
         <div style="display:flex; gap:8px; align-items:center;">
           <input id="password" name="password" type="password" required style="flex:1;">
-          <button id="toggle-login-password" type="button" class="btn secondary" style="padding:6px 8px;">Show</button>
+          <button id="toggle-agent-password" type="button" class="btn secondary" style="padding:6px 8px;">Show</button>
         </div>
       </div>
 
       <div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center;">
-        <button class="btn" type="submit">Login</button>
-        <a class="small muted" href="{{ url_for('index') }}">Continue as guest</a>
+        <button class="btn" type="submit">Request approval</button>
+        <a class="small muted" href="{{ url_for('login') }}">Back to login</a>
       </div>
     </form>
   </div>
@@ -31,7 +31,7 @@
 <script>
   (function(){
     const pwd = document.getElementById('password');
-    const btn = document.getElementById('toggle-login-password');
+    const btn = document.getElementById('toggle-agent-password');
     if (!pwd || !btn) return;
     btn.addEventListener('click', function(){
       if (pwd.type === 'password') {

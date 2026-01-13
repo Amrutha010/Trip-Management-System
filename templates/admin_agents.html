@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Agents{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Agents</h1>
+    <p class="muted">All agent accounts and approval controls.</p>
+  </div>
+</section>
+
+<div class="grid">
+  {% for a in agents %}
+    <article class="card">
+      <div class="title">{{ a.username }}</div>
+      <div class="small muted">Requested: {{ a.created_at.strftime('%Y-%m-%d') }}</div>
+      <div class="small">Approved: <strong>{{ 'Yes' if a.agent_approved else 'No' }}</strong></div>
+      <div style="margin-top:10px">
+        {% if not a.agent_approved %}
+          <form method="post" action="{{ url_for('approve_agent', agent_id=a.id) }}" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn" type="submit">Approve</button>
+          </form>
+          <form method="post" action="{{ url_for('reject_agent', agent_id=a.id) }}" style="display:inline; margin-left:6px;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn secondary" type="submit">Reject</button>
+          </form>
+        {% endif %}
+      </div>
+    </article>
+  {% else %}
+    <div class="card">No agents found.</div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Trip Bookings{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Bookings for {{ trip.title }}</h1>
+    <p class="muted">Manage bookings for this trip.</p>
+  </div>
+  <div style="margin-left:auto">
+    <a class="btn" href="{{ url_for('add_booking_page', trip_id=trip.id) }}">New Booking</a>
+  </div>
+</section>
+
+<div class="grid">
+  {% for b in bookings %}
+    <article class="card">
+      <div class="title">{{ b.customer_name }}</div>
+      <div class="meta">Seats: {{ b.seats }} • Contact: {{ b.contact }}</div>
+      <div class="small muted">Created: {{ b.created_at.strftime('%Y-%m-%d') }}</div>
+      <div style="margin-top:10px">
+        {% if current_user.role in ['agent','admin'] %}
+          <a class="btn" href="{{ url_for('view_booking', id=b.id) }}">View</a>
+          <a class="btn secondary" href="{{ url_for('edit_booking', id=b.id) }}">Edit</a>
+        {% else %}
+          <a class="btn" href="{{ url_for('view_booking', id=b.id) }}">View</a>
+        {% endif %}
+      </div>
+    </article>
+  {% else %}
+    <div class="card">No bookings found.</div>
+  {% endfor %}
+</div>
+{% endblock %}

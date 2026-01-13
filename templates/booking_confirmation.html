@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Booking confirmed{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Booking confirmed</h1>
+    <p class="muted">Thank you — your booking is successful.</p>
+  </div>
+</section>
+
+<div class="card">
+  <div class="title">Booking #{{ booking.id }}</div>
+  <div class="small muted">Trip: <a href="{{ url_for('view_trip', id=trip.id) }}">{{ trip.title }}</a></div>
+  <div style="margin-top:8px;">
+    <div>Customer: {{ booking.customer_name }}</div>
+    <div>Seats: {{ booking.seats }}</div>
+    <div>Contact: {{ booking.contact }}</div>
+    <div>Created: {{ booking.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+  </div>
+
+  <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end;">
+    <a class="btn" href="{{ url_for('all_bookings') }}">View bookings</a>
+    <a class="btn secondary" href="{{ url_for('index') }}">Continue browsing</a>
+  </div>
+</div>
+{% endblock %}

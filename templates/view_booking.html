@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Booking — {{ booking.customer_name }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>{{ booking.customer_name }}</h1>
+    <p class="muted">{{ booking.contact or '' }} • Seats: {{ booking.seats }}</p>
+  </div>
+  <div style="margin-left:auto">
+    <a class="btn" href="{{ url_for('edit_booking', id=booking.id) }}">Edit</a>
+  </div>
+</section>
+
+<div class="card">
+  <div class="meta">Trip: <a href="{{ url_for('view_trip', id=booking.trip.id) }}">{{ booking.trip.title }}</a></div>
+  <p class="small">Created: {{ booking.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+  <div style="margin-top:12px">
+    <a class="btn secondary" href="{{ url_for('bookings_for_trip', trip_id=booking.trip.id) }}">Back</a>
+  </div>
+</div>
+{% endblock %}

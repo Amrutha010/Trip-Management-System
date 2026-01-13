@@ -1,12 +1,50 @@
 {% extends "base.html" %}
+{% block title %}{{ trip and 'Edit Trip' or 'Add Trip' }}{% endblock %}
+
 {% block content %}
+<div class="hero">
+  <div>
+    <h1>{{ trip and 'Edit trip' or 'Add a new trip' }}</h1>
+    <p class="muted">Fill required fields and save. You can edit later.</p>
+  </div>
+</div>
 
-<form method="post">
-    Destination: <input name="destination"><br>
-    Start Date: <input name="start_date"><br>
-    End Date: <input name="end_date"><br>
-    Budget: <input name="budget"><br>
-    <button type="submit">Add Trip</button>
+<form class="form" method="post" action="">
+  <div class="form-grid">
+    <div>
+      <label for="title">Title</label>
+      <input id="title" name="title" type="text" placeholder="Weekend in Bali" required value="{{ trip.title if trip else '' }}">
+    </div>
+
+    <div>
+      <label for="destination">Destination</label>
+      <input id="destination" name="destination" type="text" placeholder="Destination city/country" required value="{{ trip.destination if trip else '' }}">
+    </div>
+
+    <div>
+      <label for="date">Date</label>
+      <input id="date" name="date" type="date" value="{{ trip.date if trip else '' }}">
+    </div>
+
+    <div>
+      <label for="price">Price (USD)</label>
+      <input id="price" name="price" type="number" step="0.01" placeholder="199.99" value="{{ trip.price if trip else '' }}">
+    </div>
+
+    <div style="grid-column: 1 / -1;">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="5" placeholder="Short description...">{{ trip.description if trip else '' }}</textarea>
+    </div>
+  </div>
+
+  <div style="margin-top:14px; display:flex; gap:10px;">
+    <button class="btn" type="submit">{{ trip and 'Update' or 'Save trip' }}</button>
+    <a class="btn secondary" href="{{ url_for('index') }}">Cancel</a>
+    {% if trip %}
+      <form method="post" action="{{ url_for('delete_trip', id=trip.id) }}" style="display:inline;">
+        <button class="btn danger" type="submit" onclick="return confirm('Delete this trip?')">Delete</button>
+      </form>
+    {% endif %}
+  </div>
 </form>
-
 {% endblock %}

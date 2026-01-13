@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ trip.title }}{% endblock %}
+
+{% block content %}
+<section class="hero" style="align-items:flex-end;">
+  <div style="flex:1">
+    <h1>{{ trip.title }}</h1>
+    <p class="muted">{{ trip.destination or '—' }} • {{ trip.date or 'Date TBA' }}</p>
+  </div>
+  <div style="width:320px; text-align:right">
+    {% if current_user and current_user.role == 'customer' %}
+      <a class="btn" href="{{ url_for('add_booking', trip_id=trip.id) }}">Book this trip</a>
+    {% endif %}
+    {% if current_user and (current_user.role == 'agent' and current_user.agent_approved or current_user.role == 'admin') %}
+      <a class="btn" href="{{ url_for('edit_trip', id=trip.id) }}">Edit trip</a>
+      <a class="btn secondary" href="{{ url_for('bookings_for_trip', trip_id=trip.id) }}">Bookings</a>
+    {% endif %}
+  </div>
+</section>
+
+<div class="card">
+  <img class="hero-img" src="https://picsum.photos/seed/hero{{ trip.id }}/1200/420" alt="hero photo">
+  <div class="meta">Price: {{ trip.price and ('$' ~ ('%.2f'|format(trip.price))) or 'N/A' }}</div>
+  <p style="margin-top:8px;">{{ trip.description or 'No description provided.' }}</p>
+
+  <div style="margin-top:12px">
+    <a href="{{ url_for('index') }}" class="btn secondary">Back</a>
+    {% if current_user and current_user.role == 'customer' %}
+      <a class="btn" href="{{ url_for('add_booking', trip_id=trip.id) }}">Book now</a>
+    {% endif %}
+  </div>
+
+  {# show bookings and expenses summary #}
+  <hr style="margin:18px 0; border:none; border-top:1px solid #eef2ff;">
+  <div style="display:flex; gap:18px; flex-wrap:wrap;">
+    <div style="min-width:220px;">
+      <div class="small muted">Bookings</div>
+      <div>{{ bookings|length }} booking(s)</div>
+    </div>
+    <div style="min-width:220px;">
+      <div class="small muted">Expenses</div>
+      <div>{{ expenses|length }} expense(s)</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

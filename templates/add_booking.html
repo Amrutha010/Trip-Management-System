@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Book: {{ trip.title }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Book: {{ trip.title }}</h1>
+    <p class="muted">{{ trip.destination }} • {{ trip.date }}</p>
+  </div>
+</section>
+
+<div class="card">
+  <div class="title">{{ trip.title }}</div>
+  <div class="meta">Price: {{ trip.price and ('$' ~ ('%.2f'|format(trip.price))) or 'N/A' }}</div>
+  <p style="margin-top:8px;">{{ trip.description }}</p>
+
+  <form method="post" action="{{ url_for('booking_checkout') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="trip_id" value="{{ trip.id }}">
+
+    <div class="form-grid" style="margin-top:12px;">
+      <div>
+        <label for="customer_name">Your name</label>
+        <input id="customer_name" name="customer_name" type="text" required>
+      </div>
+      <div>
+        <label for="seats">Seats</label>
+        <input id="seats" name="seats" type="number" min="1" value="1">
+      </div>
+      <div style="grid-column:1 / -1;">
+        <label for="contact">Contact (email/phone)</label>
+        <input id="contact" name="contact" type="text">
+      </div>
+    </div>
+
+    <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end;">
+      <button type="submit" class="btn">Continue to payment</button>
+      <a class="btn secondary" href="{{ url_for('view_trip', id=trip.id) }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

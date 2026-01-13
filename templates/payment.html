@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Payment{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Payment</h1>
+    <p class="muted">Complete your booking for {{ trip.title }}</p>
+  </div>
+</section>
+
+<div class="card">
+  <div class="title">{{ trip.title }}</div>
+  <div class="meta">{{ trip.destination }} • {{ trip.date }}</div>
+
+  <div style="margin-top:10px;">
+    <div class="small muted">Booking summary</div>
+    <div>Customer: {{ booking.customer_name }}</div>
+    <div>Seats: {{ booking.seats }}</div>
+    <div>Contact: {{ booking.contact }}</div>
+    <div>Price per seat: {{ trip.price and ('$' ~ ('%.2f'|format(trip.price))) or 'N/A' }}</div>
+    <div style="margin-top:8px; font-weight:700;">Total: 
+      {% if trip.price %}
+        ${{ '%.2f'|format(trip.price * booking.seats) }}
+      {% else %}
+        TBD
+      {% endif %}
+    </div>
+  </div>
+
+  <hr style="margin:18px 0; border:none; border-top:1px solid #eef2ff;">
+
+  <form method="post" action="{{ url_for('booking_complete') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-grid">
+      <div>
+        <label for="card_name">Card holder</label>
+        <input id="card_name" name="card_name" type="text" required>
+      </div>
+      <div>
+        <label for="card_number">Card number</label>
+        <input id="card_number" name="card_number" type="text" required>
+      </div>
+      <div>
+        <label for="expiry">Expiry</label>
+        <input id="expiry" name="expiry" type="text" placeholder="MM/YY" required>
+      </div>
+      <div>
+        <label for="cvc">CVC</label>
+        <input id="cvc" name="cvc" type="text" required>
+      </div>
+    </div>
+
+    <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end;">
+      <button type="submit" class="btn">Pay now</button>
+      <a class="btn secondary" href="{{ url_for('index') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

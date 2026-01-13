@@ -1,20 +1,53 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Trip Management System</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Trip Management{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <nav class="navbar">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="logo">T</span>
+      <span>Trip Management</span>
+    </a>
+    <div class="nav-links">
+      {# Home link removed - logo returns to home. Add-trip link kept for agent/admin roles #}
+      {% if current_user and ((current_user.role == 'agent' and current_user.agent_approved) or current_user.role == 'admin') %}
+        <a href="{{ url_for('add_trip') }}">Add trip</a>
+      {% endif %}
 
-<div class="navbar">
-    <h2>✈️ Trip Management System</h2>
-    <a href="/">Dashboard</a>
-    <a href="/add">Add Trip</a>
-</div>
+      {% if current_user %}
+        {% if current_user.role == 'agent' and current_user.agent_approved %}
+          <a href="{{ url_for('agent') }}">Agent</a>
+        {% endif %}
+        {% if current_user.role == 'admin' %}
+          <a href="{{ url_for('admin') }}">Admin</a>
+          <a href="{{ url_for('admin_users') }}">Users</a>
+          <a href="{{ url_for('admin_agents') }}">Agents</a>
+        {% endif %}
+        <a href="{{ url_for('all_bookings') }}">Bookings</a>
+        <a href="{{ url_for('logout') }}">Logout ({{ current_user.username }})</a>
+      {% else %}
+        <a href="{{ url_for('signup') }}">Sign up</a>
+        {# Agent onboarding removed from nav; provide URL directly to onboarding agents: /agent/onboard/<token> #}
+        <a href="{{ url_for('login') }}">Login</a>
+      {% endif %}
+    </div>
+  </nav>
 
-<div class="container">
+  <main class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="flash">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     {% block content %}{% endblock %}
-</div>
-
+  </main>
 </body>
 </html>

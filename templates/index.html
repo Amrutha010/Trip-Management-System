@@ -1,24 +1,115 @@
 {% extends "base.html" %}
+{% block title %}All Trips{% endblock %}
+
 {% block content %}
 
-<h3>Your Trips</h3>
-
-<div class="grid">
-{% for t in trips %}
-    <div class="card">
-        <h4>{{ t[1] }}</h4>
-        <p><b>Dates:</b> {{ t[2] }} → {{ t[3] }}</p>
-        <p><b>Budget:</b> ₹{{ t[4] }}</p>
-
-        <a class="btn" href="/expenses/{{ t[0] }}">View Expenses</a>
-        <a class="btn danger" href="/delete/{{ t[0] }}"
-           onclick="return confirm('Delete this trip?')">Delete</a>
+{# Carousel / landing info #}
+<section class="carousel">
+  <div class="slides">
+    <div class="slide" style="background-image:url('https://picsum.photos/seed/slide1/1200/480')">
+      <div class="slide-caption">
+        <h2>Discover curated trips</h2>
+        <p>Hand-picked experiences for every traveler.</p>
+      </div>
     </div>
-{% endfor %}
-</div>
+    <div class="slide" style="background-image:url('https://picsum.photos/seed/slide2/1200/480')">
+      <div class="slide-caption">
+        <h2>Local guides & small groups</h2>
+        <p>Authentic experiences with trusted local guides.</p>
+      </div>
+    </div>
+    <div class="slide" style="background-image:url('https://picsum.photos/seed/slide3/1200/480')">
+      <div class="slide-caption">
+        <h2>Secure payments</h2>
+        <p>Simple checkout flow and booking confirmations.</p>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-prev btn secondary" aria-label="Previous">◀</button>
+  <button class="carousel-next btn" aria-label="Next">▶</button>
+</section>
 
-{% if not trips %}
-<p>No trips added yet.</p>
+{# Role-specific hero/landing - updated customer message #}
+{% if current_user %}
+  {% if current_user.role == 'admin' %}
+    <section class="hero">
+      <div>
+        <h1>Admin dashboard</h1>
+        <p class="muted">Manage trips, bookings and agent approvals.</p>
+      </div>
+      <div style="margin-left:auto">
+        <a class="btn" href="{{ url_for('admin') }}">Open Admin</a>
+      </div>
+    </section>
+  {% elif current_user.role == 'agent' %}
+    <section class="hero">
+      <div>
+        <h1>Agent portal</h1>
+        {% if not current_user.agent_approved %}
+          <p class="muted">Your agent account is pending approval. You can view but not edit until approved.</p>
+        {% else %}
+          <p class="muted">Manage trips and bookings assigned to you.</p>
+        {% endif %}
+      </div>
+      <div style="margin-left:auto">
+        {% if current_user.agent_approved %}
+          <a class="btn" href="{{ url_for('agent') }}">Agent Dashboard</a>
+        {% endif %}
+      </div>
+    </section>
+  {% else %}
+    <section class="hero">
+      <div>
+        <h1>Welcome, {{ current_user.username }}</h1>
+        <p class="muted">Browse trips and manage your bookings. Enjoy planning your next trip!</p>
+      </div>
+      <div style="margin-left:auto">
+        <a class="btn" href="{{ url_for('customer') }}">Customer area</a>
+      </div>
+    </section>
+  {% endif %}
+{% else %}
+  <section class="hero">
+    <div>
+      <h1>Discover curated trips</h1>
+      <p class="muted">Browse, book and manage your travel plans.</p>
+    </div>
+    <div style="margin-left:auto">
+      <a class="btn" href="{{ url_for('signup') }}">Get started</a>
+    </div>
+  </section>
 {% endif %}
 
+<div class="grid">
+  {% if trips %}
+    {% for trip in trips %}
+      <article class="card">
+        <img class="thumb" src="https://picsum.photos/seed/{{ trip.id }}/600/340" alt="photo for {{ trip.title }}">
+        <div class="title">{{ trip.title or 'Untitled trip' }}</div>
+        <div class="meta">{{ trip.destination or '—' }} • {{ trip.date or 'Date TBA' }}</div>
+        <div class="small">{{ trip.description|truncate(100) }}</div>
+
+        <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+           <div class="price">{{ trip.price and ('$' ~ ('%.2f'|format(trip.price))) or '' }}</div>
+           <div>
+             <a class="btn secondary" href="{{ url_for('view_trip', id=trip.id) }}">View</a>
+
+             {# Book goes to booking form page now #}
+             {% if current_user and current_user.role == 'customer' %}
+               <a class="btn" href="{{ url_for('add_booking_page', trip_id=trip.id) }}">Book</a>
+             {% elif current_user and (current_user.role == 'agent' and current_user.agent_approved or current_user.role == 'admin') %}
+               <a class="btn secondary" href="{{ url_for('bookings_for_trip', trip_id=trip.id) }}">Bookings</a>
+               <a class="btn" href="{{ url_for('edit_trip', id=trip.id) }}">Edit</a>
+             {% else %}
+               <a class="btn" href="{{ url_for('view_trip', id=trip.id) }}">Details</a>
+             {% endif %}
+           </div>
+        </div>
+      </article>
+    {% endfor %}
+  {% else %}
+    <div class="card">No trips found.</div>
+  {% endif %}
+</div>
+<script src="{{ url_for('static', filename='carousel.js') }}"></script>
 {% endblock %}
