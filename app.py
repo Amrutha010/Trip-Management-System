@@ -79,7 +79,10 @@ def expenses(trip_id):
 def login():
     if request.method == "POST":
         username = request.form["username"]
-        role = request.form["role"]
+        role = request.form.get("role")
+
+        if username == "admin":
+            role = "admin"
 
         conn = get_db()
         user = conn.execute(
@@ -102,12 +105,15 @@ def login():
         session["role"] = role
         conn.close()
 
-        if role == "agent":
+        if role == "admin":
+            return redirect("/admin")
+        elif role == "agent":
             return redirect("/agent")
         else:
             return redirect("/customer")
 
     return render_template("login.html")
+
 
 @app.route("/customer")
 def customer_dashboard():
@@ -115,10 +121,35 @@ def customer_dashboard():
         return redirect("/login")
 
     conn = get_db()
-    trips = conn.execute("SELECT * FROM Trip").fetchall()
+    packages = conn.execute("""
+        SELECT Package.package_id, Package.name, Package.price, Trip.destination
+        FROM Package
+        JOIN Trip ON Package.trip_id = Trip.trip_id
+    """).fetchall()
+
+    bookings = conn.execute("""
+        SELECT Package.name, Booking.status
+        FROM Booking
+        JOIN Package ON Booking.package_id = Package.package_id
+        WHERE Booking.user_id=?
+    """, (session["user_id"],)).fetchall()
+
+    wishlist = conn.execute("""
+        SELECT Package.name
+        FROM Wishlist
+        JOIN Package ON Wishlist.package_id = Package.package_id
+        WHERE Wishlist.user_id=?
+    """, (session["user_id"],)).fetchall()
+
     conn.close()
 
-    return render_template("customer.html", trips=trips)
+    return render_template(
+        "customer.html",
+        packages=packages,
+        bookings=bookings,
+        wishlist=wishlist
+    )
+
 
 @app.route("/apply/<int:trip_id>")
 def apply_trip(trip_id):
@@ -141,16 +172,100 @@ def agent_dashboard():
         return redirect("/login")
 
     conn = get_db()
-    trips = conn.execute("SELECT * FROM Trip").fetchall()
+    trips = conn.execute(
+        "SELECT * FROM Trip WHERE agent_id=?",
+        (session["user_id"],)
+    ).fetchall()
+
+    packages = conn.execute("""
+        SELECT Package.package_id, Package.name, Package.price
+        FROM Package
+        JOIN Trip ON Package.trip_id = Trip.trip_id
+        WHERE Trip.agent_id=?
+    """, (session["user_id"],)).fetchall()
+
     bookings = conn.execute("""
-        SELECT Booking.booking_id, User.username, Trip.destination, Booking.status
+        SELECT User.username, Package.name, Booking.status
         FROM Booking
         JOIN User ON Booking.user_id = User.user_id
-        JOIN Trip ON Booking.trip_id = Trip.trip_id
+        JOIN Package ON Booking.package_id = Package.package_id
+        JOIN Trip ON Package.trip_id = Trip.trip_id
+        WHERE Trip.agent_id=?
+    """, (session["user_id"],)).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "agent.html",
+        trips=trips,
+        packages=packages,
+        bookings=bookings
+    )
+
+@app.route("/admin")
+def admin_dashboard():
+    if session.get("role") != "admin":
+        return redirect("/login")
+
+    conn = get_db()
+    agents = conn.execute("SELECT * FROM User WHERE role='agent'").fetchall()
+    trips = conn.execute("SELECT * FROM Trip").fetchall()
+    packages = conn.execute("SELECT * FROM Package").fetchall()
+    bookings = conn.execute("""
+        SELECT Booking.booking_id, User.username, Package.name, Booking.status
+        FROM Booking
+        JOIN User ON Booking.user_id = User.user_id
+        JOIN Package ON Booking.package_id = Package.package_id
     """).fetchall()
     conn.close()
 
-    return render_template("agent.html", trips=trips, bookings=bookings)
+    return render_template(
+        "admin.html",
+        agents=agents,
+        trips=trips,
+        packages=packages,
+        bookings=bookings
+    )
+
+@app.route("/admin/create-agent", methods=["POST"])
+def create_agent():
+    if session.get("role") != "admin":
+        return redirect("/login")
+
+    username = request.form["username"]
+
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO User(username, role) VALUES (?, ?)",
+        (username, "agent")
+    )
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin")
+
+
+@app.route("/book/<int:package_id>")
+def book_package(package_id):
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO Booking(user_id, package_id, status) VALUES (?, ?, ?)",
+        (session["user_id"], package_id, "Booked")
+    )
+    conn.commit()
+    conn.close()
+    return redirect("/customer")
+
+@app.route("/wishlist/<int:package_id>")
+def wishlist_package(package_id):
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO Wishlist(user_id, package_id) VALUES (?, ?)",
+        (session["user_id"], package_id)
+    )
+    conn.commit()
+    conn.close()
+    return redirect("/customer")
 
 
 if __name__ == "__main__":

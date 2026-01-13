@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Create Agent</h3>
+<form method="post" action="/admin/create-agent" class="form">
+    <input name="username" placeholder="Agent username" required>
+    <button class="btn">Create Agent</button>
+</form>
+
+<hr>
+
+<h2>Admin Dashboard</h2>
+
+<h3>Agents</h3>
+<ul>
+{% for a in agents %}
+    <li>{{ a[1] }}</li>
+{% endfor %}
+</ul>
+
+<hr>
+
+<h3>Trips</h3>
+<ul>
+{% for t in trips %}
+    <li>{{ t[1] }} ({{ t[2] }} → {{ t[3] }})</li>
+{% endfor %}
+</ul>
+
+<hr>
+
+<h3>Packages</h3>
+<ul>
+{% for p in packages %}
+    <li>{{ p[1] }} – ₹{{ p[2] }}</li>
+{% endfor %}
+</ul>
+
+<hr>
+
+<h3>Bookings</h3>
+<table>
+<tr><th>User</th><th>Package</th><th>Status</th></tr>
+{% for b in bookings %}
+<tr>
+    <td>{{ b[1] }}</td>
+    <td>{{ b[2] }}</td>
+    <td>{{ b[3] }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
