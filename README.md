@@ -25,15 +25,3 @@ Quick start (Windows)
    python app.py
    ```
 4. Admin: username `admin`, password `password` (change in app.py).
-
-Notes
-- Database: SQLite file `trip.db` is created automatically.
-- Tests: add pytest tests that exercise services and routes.
-- Next improvements: stronger auth (Flask-Login), migrations (Flask-Migrate), export/report tools.
-
-Architecture summary
-- models.py — domain models (Trip, Booking, Expense) implementing shared behaviour via BaseRecord.
-- services.py — encapsulated CRUD operations (one service per aggregate).
-- app.py — Flask routes (web + small JSON API), uses services to implement business operations.
-- templates/ — Jinja templates for UI.
-- static/style.css — improved UI styling.
