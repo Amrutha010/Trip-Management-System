@@ -113,9 +113,10 @@ body {
     display:block;
 }
 
+/* hero image for trip view: match card look but larger */
 .card .hero-img{
     width:100%;
-    height:320px;
+    height:340px;        /* matches card ratio (600x340) but larger */
     object-fit:cover;
     border-radius:8px;
     margin-bottom:12px;
@@ -245,12 +246,99 @@ body {
 .carousel .slides{ position:relative; }
 .carousel .slide{ display:none; background-size:cover; background-position:center; padding:48px 28px; color:#fff; min-height:220px; position:relative; }
 .carousel .slide-caption{ background:linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.1)); padding:18px; border-radius:8px; max-width:640px; }
-.carousel .carousel-prev, .carousel .carousel-next{ position:absolute; top:50%; transform:translateY(-50%); }
-.carousel .carousel-prev{ left:12px; }
-.carousel .carousel-next{ right:12px; }
 
-/* responsiveness */
-@media (max-width:600px){
-    .hero{ flex-direction:column; align-items:flex-start; }
-    .nav-links{ display:none; }
+.carousel-controls{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+.carousel-prev, .carousel-next{ pointer-events:auto; position:relative; z-index:5; border-radius:8px; opacity:0.95; }
+.carousel-prev{ margin-right:10px; }
+.carousel-next{ margin-left:10px; }
+
+/* dots */
+.carousel-dots{ display:flex; gap:8px; align-items:center; pointer-events:auto; }
+.carousel-dots .dot{ width:12px; height:12px; border-radius:999px; border:0; background:rgba(255,255,255,0.5); cursor:pointer; padding:0; }
+.carousel-dots .dot.active{ background:var(--accent); box-shadow:0 2px 6px rgba(37,99,235,0.18); }
+
+/* center controls adapt for small screens */
+@media (max-width:640px){
+  .carousel .slide{ padding:28px 16px; min-height:180px;}
+  .carousel-controls{ gap:8px; }
 }
+
+/* Password icon toggle button style */
+.pwd-toggle {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:36px;
+  border-radius:8px;
+  border:1px solid rgba(16,24,40,0.06);
+  background:var(--card);
+  cursor:pointer;
+  padding:6px;
+}
+.pwd-toggle svg{ width:18px; height:18px; display:block; color:var(--muted); }
+.pwd-toggle:active{ transform:translateY(1px); }
+
+/* Input with icon (password) */
+.input-with-icon{ position:relative; display:flex; align-items:center; }
+.input-with-icon input[type="password"],
+.input-with-icon input[type="text"]{
+  padding-right:44px; /* reserve space for icon, prevents layout shift */
+}
+
+/* password toggle minimal eye icon, fixed size so no reflow */
+.password-toggle{
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--accent);
+  box-shadow: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove browser inner focus ring for Firefox */
+.password-toggle::-moz-focus-inner { border: 0; padding: 0; }
+
+/* Keep keyboard focus visible but without a filled box: use subtle outline */
+.password-toggle:focus {
+  outline: none;
+}
+.password-toggle:focus-visible {
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.08);
+  border-radius: 6px;
+}
+
+/* Reserve space so toggling doesn't reflow the input */
+.input-with-icon input[type="password"],
+.input-with-icon input[type="text"]{
+  padding-right:44px; /* already present; keep it */
+}
+
+/* Footer */
+.site-footer{
+    margin-top:36px;
+    padding:20px;
+    background:linear-gradient(180deg, rgba(15,23,32,0.03), transparent);
+    border-top:1px solid rgba(15,23,32,0.04);
+    color:var(--muted);
+    border-radius:8px;
+}
+.site-footer .inner{
+    max-width:var(--max-width);
+    margin:0 auto;
+    display:flex;
+    gap:24px;
+    align-items:flex-start;
+    padding:0 20px;
+    justify-content:space-between;
+}
+.site-footer .col{min-width:160px;}
+.site-footer a{ color:var(--accent); text-decoration:none; }

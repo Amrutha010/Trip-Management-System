@@ -14,9 +14,9 @@
       </div>
       <div style="margin-top:10px;">
         <label for="password">Password</label>
-        <div style="display:flex; gap:8px; align-items:center;">
+        <div class="input-with-icon">
           <input id="password" name="password" type="password" required style="flex:1;">
-          <button id="toggle-password" type="button" class="btn secondary" style="padding:6px 8px;">Show</button>
+          <button type="button" class="password-toggle" data-target="#password" aria-label="Toggle password"></button>
         </div>
       </div>
 
@@ -27,19 +27,4 @@
     </form>
   </div>
 </div>
-
-<script>
-  (function(){
-    const pwd = document.getElementById('password');
-    const btn = document.getElementById('toggle-password');
-    if (!pwd || !btn) return;
-    btn.addEventListener('click', function(){
-      if (pwd.type === 'password') {
-        pwd.type = 'text'; btn.textContent = 'Hide';
-      } else {
-        pwd.type = 'password'; btn.textContent = 'Show';
-      }
-    });
-  })();
-</script>
 {% endblock %}

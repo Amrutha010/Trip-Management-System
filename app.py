@@ -378,5 +378,6 @@ def agent_onboard(token):
         return redirect(url_for("index"))
     return render_template("signup_agent.html", token=token)
 
+
 if __name__ == "__main__":
     app.run(debug=True)

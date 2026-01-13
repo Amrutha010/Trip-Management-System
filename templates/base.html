@@ -14,11 +14,9 @@
       <span>Trip Management</span>
     </a>
     <div class="nav-links">
-      {# Home link removed - logo returns to home. Add-trip link kept for agent/admin roles #}
       {% if current_user and ((current_user.role == 'agent' and current_user.agent_approved) or current_user.role == 'admin') %}
         <a href="{{ url_for('add_trip') }}">Add trip</a>
       {% endif %}
-
       {% if current_user %}
         {% if current_user.role == 'agent' and current_user.agent_approved %}
           <a href="{{ url_for('agent') }}">Agent</a>
@@ -32,7 +30,6 @@
         <a href="{{ url_for('logout') }}">Logout ({{ current_user.username }})</a>
       {% else %}
         <a href="{{ url_for('signup') }}">Sign up</a>
-        {# Agent onboarding removed from nav; provide URL directly to onboarding agents: /agent/onboard/<token> #}
         <a href="{{ url_for('login') }}">Login</a>
       {% endif %}
     </div>
@@ -49,5 +46,46 @@
 
     {% block content %}{% endblock %}
   </main>
-</body>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="inner">
+      <div class="col">
+        <div style="font-weight:700; margin-bottom:6px;">Trip Management</div>
+        <div class="small muted">Planning made simple — demo footer content.</div>
+      </div>
+      <div class="col">
+        <div style="font-weight:600; margin-bottom:6px;">Contact</div>
+        <div class="small muted">support@example.com</div>
+        <div class="small muted">+1 (555) 123-4567</div>
+      </div>
+      <div class="col">
+        <div style="font-weight:600; margin-bottom:6px;">Links</div>
+        <a href="{{ url_for('index') }}">Home</a><br>
+        <a href="{{ url_for('all_bookings') }}">Bookings</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Global password toggle handler: uses data-target attribute on button.
+    (function(){
+      const eye = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const eyeOff = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.1 18.1 0 0 1 5-5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 1l22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      document.addEventListener('click', function(e){
+        const btn = e.target.closest('.password-toggle');
+        if(!btn) return;
+        const targetSelector = btn.getAttribute('data-target');
+        if(!targetSelector) return;
+        const input = document.querySelector(targetSelector);
+        if(!input) return;
+        if(input.type === 'password'){ input.type = 'text'; btn.innerHTML = eyeOff; }
+        else { input.type = 'password'; btn.innerHTML = eye; }
+      });
+      // initialize icon content for all existing buttons
+      document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('.password-toggle').forEach(b => { if(!b.innerHTML.trim()) b.innerHTML = eye; });
+      });
+    })();
+  </script>
+ </body>
 </html>
