@@ -37,9 +37,3 @@ Architecture summary
 - app.py — Flask routes (web + small JSON API), uses services to implement business operations.
 - templates/ — Jinja templates for UI.
 - static/style.css — improved UI styling.
-
-If you want, I can:
-- Add Flask-Login and protect routes properly.
-- Add Flask-Migrate migrations for schema changes.
-- Add unit tests that exercise the services and a few routes.
-- Wire in CSV/Excel export for reports.
